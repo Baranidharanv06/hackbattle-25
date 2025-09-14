@@ -51,17 +51,11 @@ export default function FaqSection() {
   
   const [openIndex, setOpenIndex] = useState(null);
   const [currentCharacter, setCurrentCharacter] = useState({ src: '/Blaze.webm', style: {} });
-  const [displayedCharacter, setDisplayedCharacter] = useState(currentCharacter);
-  useEffect(() => {
-    const video = document.createElement('video');
-    video.src = currentCharacter.src;
-    video.onloadeddata = () => {
-      setDisplayedCharacter(currentCharacter);
-    };
-  }, [currentCharacter]); 
-
-
-
+  
+  // 1. Create the audio object for the chest sound
+  const [chestOpenSound] = useState(() =>
+    typeof window !== 'undefined' ? new Audio('/Chest.ogg') : null
+  );
 
   const pathname = usePathname();
 
@@ -80,9 +74,14 @@ export default function FaqSection() {
   const toggleItem = (index) => {
     if (openIndex === index) {
       setOpenIndex(null);
-
       setCurrentCharacter({ src: '/Blaze.webm', style: {} });
     } else {
+      // 2. Play the sound when a new item is opened
+      if (chestOpenSound) {
+        chestOpenSound.currentTime = 0; // Rewind to the start
+        chestOpenSound.play();
+      }
+      
       setOpenIndex(index);
       setCurrentCharacter({ 
         src: faqData[index].characterWebM, 
@@ -105,7 +104,7 @@ export default function FaqSection() {
               FAQs
             </h1>
             <Image 
-            loading='lazy'
+              loading='lazy'
               src="/question.svg"
               alt="Question Mark"
               width={64}
@@ -117,11 +116,10 @@ export default function FaqSection() {
           
           <div className="hidden md:flex md:w-1/3 md:items-end md:justify-center">
             <div className="w-full mt-35">
-
               <CharacterDisplay 
-                characterSrc={displayedCharacter.src} 
-                style={displayedCharacter.style}
-                className={displayedCharacter.src === '/Blaze.webm' ? 'transform scale-x-[-1]' : ''}
+                characterSrc={currentCharacter.src} 
+                style={currentCharacter.style}
+                className={currentCharacter.src === '/Blaze.webm' ? 'transform scale-x-[-1]' : ''}
               />
             </div>
           </div>
