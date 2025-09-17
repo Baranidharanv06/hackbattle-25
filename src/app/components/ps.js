@@ -2,10 +2,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
+// Data array updated to use .mp3 files
 const statementsData = Array.from({ length: 10 }, (_, i) => ({
   id: i,
   image: `/ps/${i + 1}.png`,
-  sound: `/${i + 1}.ogg`, 
+  sound: `/${i + 1}.mp3`, // Changed to .mp3
 }));
 
 export default function ProblemStatements() {
@@ -14,7 +15,7 @@ export default function ProblemStatements() {
 
   useEffect(() => {
     const audio = new Audio();
-    audio.volume = 0.5; 
+    audio.volume = 0.5;
     setHoverSound(audio);
   }, []);
 
@@ -32,7 +33,6 @@ export default function ProblemStatements() {
 
   const handleClick = (item) => {
     setActive(active === item.id ? null : item.id);
- 
     if (hoverSound && item.sound) {
         hoverSound.src = item.sound;
         hoverSound.play().catch(e => console.error("Error playing sound:", e));
