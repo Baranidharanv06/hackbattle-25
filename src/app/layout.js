@@ -1,7 +1,9 @@
-//import Chatbot from "./components/BotSidebar";
+// import Chatbot from "./components/BotSidebar";
 import './globals.css';
 import { Press_Start_2P } from 'next/font/google';
-import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
+import SmoothScroll from "./SmoothScroll.js";
+import CustomCursor from './components/Cursor';
 
 export const metadata = { 
   title: 'HackBattle 2025', 
@@ -23,11 +25,26 @@ const pressStart2P = Press_Start_2P({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+          `}
+        </Script>
+      </head>
       <body className={pressStart2P.className}>
-        {children}
-       {/* <Chatbot /> */}
+        {/* <SmoothScroll> */}
+          {children}
+        {/* </SmoothScroll> */}
+        <CustomCursor />
       </body>
     </html>
   );
 }
-

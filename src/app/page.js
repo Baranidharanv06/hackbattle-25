@@ -5,10 +5,9 @@ import About from "./components/about";
 import FaqSection from "src/components/FaqSection";
 import SpeechBubble from "src/app/components/SpeechBubble";
 import PS from "./components/ps";
-import CustomCursor from "./components/Cursor";
 import SpeakerSection from "./components/speaker";
 import Marquee from "./components/Marquee";
-
+import Navbar from "./components/Navbar";
 
 export default function Page() {
   const [speechBubbleComplete, setSpeechBubbleComplete] = useState(false);
@@ -39,28 +38,23 @@ export default function Page() {
     setSpeechBubbleComplete(true);
   };
 
-  if (!cookieChecked) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
-        <video
-          src="/loader.webm"
-          autoPlay
-          loop
-          muted
-          playsInline
-          alt="Loading..."
-          height={128}
-          width={128}
-          className="w-32 h-32"
-        />
-      </div>
-    );
-  }
+  // if (!cookieChecked) {
+  //   return (
+  //     <div className="fixed inset-0 z-50">
+  //         <video
+  //           src="mojang.mp4"
+  //           autoPlay
+  //           muted
+  //           playsInline
+  //           className="absolute top-0 left-0 w-full h-full object-cover"
+  //         />
+  //       </div>
+  //   );
+  // }
 
   return (
-    <div>
-      {!isMobile && <CustomCursor />}
-      
+    <div>  
+      <Navbar />    
       {isMobile ? (
         <>
           {!speechBubbleComplete && (
@@ -76,9 +70,11 @@ export default function Page() {
 
       {((isMobile && landingLoaded && speechBubbleComplete) || (!isMobile && landingLoaded)) && (
         <>
-          <div className="absolute -bottom-[10vh] md:-bottom-[10vh] w-full z-10 overflow-x-clip">
-        <Marquee />
-      </div>
+          <div className="relative">
+  <div className="absolute inset-x-0 -bottom-[5vh] md:-bottom-[10vh] w-full z-10 overflow-x-clip">
+    <Marquee />
+  </div>
+</div>
           <About />
           <PS />
           <SpeakerSection />

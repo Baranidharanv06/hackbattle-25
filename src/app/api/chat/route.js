@@ -1,4 +1,3 @@
-// src/app/api/chat/route.js
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -6,30 +5,29 @@ export async function POST(req) {
 
     const { message } = body;
 
-    if (
-      !message ||
-      typeof message !== "string" ||
-      message.trim().length === 0
-    ) {
+    if (!message || typeof message !== "string" || message.trim().length === 0) {
       return new Response(
         JSON.stringify({ error: "Message (question) is required" }),
         { status: 422 }
       );
     }
 
-    const res = await fetch(
-     process.env.NEXT_PUBLIC_BASE_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Modal-Key": process.env.MODAL_KEY,
-          "Modal-Secret": process.env.MODAL_SECRET,
-        },
-      
-        body: JSON.stringify({ question: message }),
-      }
-    );
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 300000);
+
+    const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Modal-Key": process.env.MODAL_KEY,
+        "Modal-Secret": process.env.MODAL_SECRET,
+      },
+      body: JSON.stringify({ question: message }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeout);
 
     const rawText = await res.text();
     console.log("Modal raw response:", rawText);
@@ -45,7 +43,6 @@ export async function POST(req) {
     try {
       data = JSON.parse(rawText);
     } catch {
-      
       data = { reply: rawText };
     }
 
